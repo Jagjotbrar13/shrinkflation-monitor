@@ -1,0 +1,15 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Railway deploy placeholder
+        run: echo "Deploy API to Railway using RAILWAY_TOKEN and service config."
+      - name: Vercel deploy placeholder
+        run: echo "Deploy frontend to Vercel using VERCEL_TOKEN, ORG_ID, and PROJECT_ID."
