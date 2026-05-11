@@ -87,22 +87,22 @@ The app runs fully without PostgreSQL or Redis using a realistic 28-product fall
 
 ## System Architecture
 
-```
+```txt
 Retail product snapshots
-
+        ↓
 Scraper ingestion pipeline
-
+        ↓
 Normalization engine standardizes units (g, mL, kg, L)
-
+        ↓
 Historical product snapshots stored
-
+        ↓
 Detection engine compares size + price-per-unit changes
-
+        ↓
 Severity scoring + insight generation
-
-FastAPI serves analytics endpoints
-
-Next.js dashboard visualizes trends
+        ↓
+FastAPI analytics endpoints
+        ↓
+Next.js dashboard visualization
 ```
 
 ---
@@ -132,84 +132,35 @@ Products list sizes as `"1 kg"`, `"1000g"`, `"2 × 500g"`, or `"35.2 oz"`. Price
 
 Here's how the pipeline handles it:
 
-```
+```txt
 Raw Scraped Data
+        ↓
+Unit Normalization
+        Converts all sizes to g or mL
+        Handles multi-packs, oz, kg, L, mL
 
+        ↓
+Price-Per-Unit Calculation
+        Cost per 100g / 100mL per snapshot
 
-Unit Normalization Converts all sizes to g or mL.
- Handles multi-packs, ozg, LmL.
+        ↓
+Snapshot Diffing
+        Historical comparison per product per store
 
+        ↓
+Noise Filtering
+        Ignores sales, rounding artifacts, label changes
 
-Price-Per-Unit Calc Cost per 100g / 100mL per snapshot.
+        ↓
+Severity Scoring
+        Weighted by size drop, PPU increase, and recency
 
-
-Snapshot Diffing Old vs. new comparison per product per store.
-
-
-Noise Filtering Ignores sales, rounding artifacts, label changes.
-
-
-Severity Scoring Weighted: % size drop + % PPU increase + recency.
-
-
-Insight Generation "Package shrank 12.5% while cost per 100g rose 18%."
+        ↓
+Insight Generation
+        "Package shrank 12.5% while cost per 100g rose 18%"
 ```
 
 The same pipeline runs against real scraped data **or** the demo fallback keeping the full production architecture validated during local development.
-
----
-
-## Repository Structure
-
-```
-shrinkflation-monitor/
- .github/
- workflows/
- ci.yml
- scraper.yml
- deploy.yml
- api/
- auth/
- middleware/
- routes/
- tests/
- cache.py
- config.py
- database.py
- demo_data.py
- main.py
- models.py
- schemas.py
- db/
- migrations/
- frontend/
- app/
- components/
- lib/
- Dockerfile
- package.json
- insights/
- basket_insights.py
- category_insights.py
- product_insights.py
- store_insights.py
- scraper/
- spiders/
- detector.py
- normalizer.py
- scheduler.py
- seed_demo_data.py
- workers/
- alert_dispatcher.py
- insight_refresher.py
- report_generator.py
- docker-compose.yml
- docker-compose.prod.yml
- Makefile
- pyproject.toml
-```
-
----
 
 ## API Reference
 
@@ -263,7 +214,7 @@ shrinkflation-monitor/
 ### 1. Clone
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/shrinkflation-monitor.git
+git clone https://github.com/Jagjotbrar13/shrinkflation-monitor.git
 cd shrinkflation-monitor
 ```
 
